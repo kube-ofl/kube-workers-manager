@@ -145,9 +145,9 @@ func (w *Worker) CreateService() {
 			Ports: []corev1.ServicePort{
 				{
 					Protocol: corev1.ProtocolTCP,
-					Port:     w.Port,
+					Port:     int32(w.Port),
 					TargetPort: intstr.IntOrString{
-						IntVal: w.Port,
+						IntVal: int32(w.Port),
 					},
 				},
 			},
@@ -181,6 +181,24 @@ func main() {
 	if err != nil {
 		fmt.Errorf(err.Error())
 	}
+
+	worker := &Worker{
+		Name:            "ofl-worker-1",
+		Namespace:       "default",
+		Image:           "ofl-worker:latest",
+		Port:            9001,
+		TrainingDataDir: "trainingSetWorker1",
+		clientset:       clientset,
+	}
+
+	cmData := `{
+      "port": 9001,
+      "upload_folder": "/data"
+    }`
+
+	worker.CreateConfigMap(cmData)
+	worker.CreateDeployment()
+	worker.CreateService()
 
 	// Create a namespace
 	// namespace := "ofl-namespace"
