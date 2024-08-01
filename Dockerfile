@@ -1,6 +1,4 @@
-FROM golang:1.22.5-alpine3.19 as base
-
-FROM base as dev
+FROM golang:1.22.5-alpine3.19 as builder
 
 ADD . /go/src/app
 WORKDIR /go/src/app
@@ -13,4 +11,12 @@ RUN go mod download
 RUN go mod tidy
 RUN go build -o server
 
-CMD [ "./server" ]
+FROM scratch
+
+COPY --from=builder /go/src/app/server /app/server
+
+# Set the working directory
+WORKDIR /app
+
+# Command to run the binary
+CMD ["./server"]
