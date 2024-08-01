@@ -39,8 +39,8 @@ func StartServer(config *usecases.Config) {
 
 	router := NewAPI()
 
-	fmt.Printf("HTTP Server is running on port %s\n", int32(config.ManagerPort))
-	log.Fatal(http.ListenAndServe(string(config.ManagerPort), handlers.CORS(originsOk, headersOk, methodsOk)(router)))
+	fmt.Printf("HTTP Server is running on port %s\n", config.ManagerPort)
+	log.Fatal(http.ListenAndServe(":"+config.ManagerPort, handlers.CORS(originsOk, headersOk, methodsOk)(router)))
 }
 
 func commonMiddleware(next http.Handler) http.Handler {

@@ -11,7 +11,7 @@ var (
 )
 
 type Config struct {
-	ManagerPort int `json:"managerPort"`
+	ManagerPort string `json:"managerPort"`
 }
 
 func ReadConfig() (*Config, error) {

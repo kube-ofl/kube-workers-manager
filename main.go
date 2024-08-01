@@ -10,8 +10,10 @@ func main() {
 
 	config, err := usecases.ReadConfig()
 	if err != nil {
-		fmt.Errorf("Error while trying to read service config: %v\n", err.Error())
+		panic(fmt.Errorf("Error while trying to read service config: %v", err.Error()))
 	}
+
+	fmt.Println(config)
 
 	gateways.StartServer(config)
 
