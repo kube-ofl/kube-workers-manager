@@ -33,7 +33,7 @@ type WorkerApi struct {
 }
 
 type CmData struct {
-	WorkerID     int    `json:"workerID"`
+	WorkerID     string `json:"workerID"`
 	Port         int    `json:"port"`
 	UploadFolder string `json:"uploadFolder"`
 	DatasetPath  string `json:"datasetPath"`
@@ -254,7 +254,7 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 		}
 
 		configMapData := &CmData{
-			WorkerID:     i,
+			WorkerID:     fmt.Sprintf("worker-%d", i),
 			Port:         workerPort,
 			UploadFolder: uploadFolder,
 			DatasetPath:  workersDetails.DatasetPath,
