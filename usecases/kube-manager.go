@@ -25,6 +25,7 @@ type Worker struct {
 type WorkerApi struct {
 	WorkersNo       int    `json:"workersNo"`
 	TrainingDataDir string `json:"trainingDataDir`
+	DatasetPath     string `json:"datasetPath"`
 	Namespace       string `json:"namespace,omitempty"`
 	Image           string `json:"image,omitempty"`
 	WorkerPort      int    `json:"workerPort,omitempty"`
@@ -35,6 +36,7 @@ type CmData struct {
 	WorkerID     int    `json:"workerID"`
 	Port         int    `json:"port"`
 	UploadFolder string `json:"uploadFolder"`
+	DatasetPath  string `json:"datasetPath"`
 }
 
 func getWorkerName(count int) string {
@@ -255,6 +257,7 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 			WorkerID:     i,
 			Port:         workerPort,
 			UploadFolder: uploadFolder,
+			DatasetPath:  workersDetails.DatasetPath,
 		}
 
 		cmData, err := json.Marshal(configMapData)
