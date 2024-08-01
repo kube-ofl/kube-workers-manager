@@ -27,7 +27,7 @@ type WorkerApi struct {
 	TrainingDataDir string `json:"trainingDataDir`
 	Namespace       string `json:"namespace,omitempty"`
 	Image           string `json:"image,omitempty"`
-	BasePort        int    `json:"basePort,omitempty"`
+	WorkerPort      int    `json:"workerPort,omitempty"`
 	UploadFolder    string `json:"uploadFolder,omitempty"`
 }
 
@@ -38,11 +38,7 @@ type CmData struct {
 }
 
 func getWorkerName(count int) string {
-	return fmt.Sprintf("ofl-worker-%d", count)
-}
-
-func getWorkerPort(basePort, count int) int {
-	return basePort + count
+	return fmt.Sprintf("worker-%d", count)
 }
 
 func (w *Worker) createDeployment() {
@@ -226,15 +222,15 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 	}
 
 	ns := "default"
-	basePort := 9000
+	workerPort := 9000
 	image := "ofl-worker:latest"
 	uploadFolder := "/data"
 
 	if workersDetails.Namespace != "" {
 		ns = workersDetails.Namespace
 	}
-	if workersDetails.BasePort > 0 {
-		basePort = workersDetails.BasePort
+	if workersDetails.WorkerPort > 0 {
+		workerPort = workersDetails.WorkerPort
 	}
 	if workersDetails.Image != "" {
 		image = workersDetails.Image
@@ -250,14 +246,14 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 			Name:            getWorkerName(i),
 			Namespace:       ns,
 			Image:           image,
-			Port:            getWorkerPort(basePort, i),
+			Port:            workerPort,
 			TrainingDataDir: workersDetails.TrainingDataDir,
 			clientset:       clientset,
 		}
 
 		configMapData := &CmData{
 			WorkerID:     i,
-			Port:         getWorkerPort(basePort, i),
+			Port:         workerPort,
 			UploadFolder: uploadFolder,
 		}
 
