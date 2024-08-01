@@ -22,11 +22,18 @@ UploadFolder: /data
 ## Examples of API calls:
 
 - the most basic(and probably the most used)
+```
 POST /worker-manager/createWorkers
 { 
     "workersNo": 4,
-    "TrainingDataDir": "trainingDataDir1",
+    "trainingDataDir": "trainingDataDir1"
 }
+```
+```
+curl -X POST http://localhost:80/worker-manager/createWorkers -H "Content-Type: application/json" -d '{"workersNo": 4, "trainingDataDir": "trainingDataDir1"}'
+curl -X POST http://worker-manager-service.svc.cluster.local/worker-manager/createWorkers -H "Content-Type: application/json" -d '{"workersNo": 4, "trainingDataDir": "trainingDataDir1"}'
+```
+
 
 - other example:
 POST /worker-manager/createWorkers

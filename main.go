@@ -13,8 +13,6 @@ func main() {
 		panic(fmt.Errorf("Error while trying to read service config: %v", err.Error()))
 	}
 
-	fmt.Println(config)
-
 	gateways.StartServer(config)
 
 }
