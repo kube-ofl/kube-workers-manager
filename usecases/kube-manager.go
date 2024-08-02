@@ -14,22 +14,21 @@ import (
 )
 
 type Worker struct {
-	Name            string `json:"name"`
-	Namespace       string `json:"namespace,omitempty"`
-	Image           string `json:"image"`
-	Port            int    `json:"port"`
-	TrainingDataDir string `json:"trainingDir"`
-	clientset       *kubernetes.Clientset
+	Name        string `json:"name"`
+	Namespace   string `json:"namespace,omitempty"`
+	Image       string `json:"image"`
+	Port        int    `json:"port"`
+	DatasetPath string `json:"datasetPath"`
+	clientset   *kubernetes.Clientset
 }
 
 type WorkerApi struct {
-	WorkersNo       int    `json:"workersNo"`
-	TrainingDataDir string `json:"trainingDataDir`
-	DatasetPath     string `json:"datasetPath"`
-	Namespace       string `json:"namespace,omitempty"`
-	Image           string `json:"image,omitempty"`
-	WorkerPort      int    `json:"workerPort,omitempty"`
-	UploadFolder    string `json:"uploadFolder,omitempty"`
+	WorkersNo    int    `json:"workersNo"`
+	DatasetPath  string `json:"datasetPath"`
+	Namespace    string `json:"namespace,omitempty"`
+	Image        string `json:"image,omitempty"`
+	WorkerPort   int    `json:"workerPort,omitempty"`
+	UploadFolder string `json:"uploadFolder,omitempty"`
 }
 
 type CmData struct {
@@ -70,7 +69,7 @@ func (w *Worker) createDeployment() {
 							Image:           w.Image,
 							ImagePullPolicy: corev1.PullIfNotPresent,
 							Command:         []string{"python3", "api.py"},
-							Args:            []string{fmt.Sprintf("/data/dataset/%s", w.TrainingDataDir)},
+							//  Args:            []string{fmt.Sprintf("/data/dataset/%s", w.TrainingDataDir)},
 							VolumeMounts: []corev1.VolumeMount{
 								{
 									Name:      "config",
@@ -219,8 +218,8 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 		return fmt.Errorf("Invalid number of workers\n")
 	}
 
-	if workersDetails.TrainingDataDir == "" {
-		return fmt.Errorf("TrainingDataDir was not specified\n")
+	if workersDetails.DatasetPath != "" {
+		return fmt.Errorf("DatasetPath not specified")
 	}
 
 	ns := "default"
@@ -245,12 +244,12 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 	for i := 1; i <= workersDetails.WorkersNo; i++ {
 
 		worker := &Worker{
-			Name:            getWorkerName(i),
-			Namespace:       ns,
-			Image:           image,
-			Port:            workerPort,
-			TrainingDataDir: workersDetails.TrainingDataDir,
-			clientset:       clientset,
+			Name:        getWorkerName(i),
+			Namespace:   ns,
+			Image:       image,
+			Port:        workerPort,
+			DatasetPath: workersDetails.DatasetPath,
+			clientset:   clientset,
 		}
 
 		configMapData := &CmData{
