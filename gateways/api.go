@@ -59,16 +59,22 @@ func CreateWorkers(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(workersDetails)
 	if err != nil {
-		http.Error(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "Bad Request: cannot unmarshal the body "+err.Error(), http.StatusBadRequest)
+		fmt.Println("Cannot unmarshal workersDetails struct", err.Error())
 		return
 	}
+
+	fmt.Println("Workers details: ", workersDetails)
 
 	err = usecases.CreateKubeObjects(workersDetails)
 	if err != nil {
-		json.NewEncoder(w).Encode(fmt.Errorf("Error creating workers: %v\n", err.Error()))
+		http.Error(w, "Error creating workers: "+err.Error(), http.StatusBadRequest)
+		// json.NewEncoder(w).Encode(fmt.Errorf("Error creating workers: %v\n", err.Error()))
+		fmt.Println("Cannot create workers: ", err.Error())
 		return
 	}
 
+	fmt.Println("Request handled successfully")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(fmt.Sprintf("Workers created successfully\n"))
 }
