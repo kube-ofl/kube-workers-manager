@@ -218,7 +218,7 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 		return fmt.Errorf("Invalid number of workers\n")
 	}
 
-	if workersDetails.DatasetPath != "" {
+	if workersDetails.DatasetPath == "" {
 		return fmt.Errorf("DatasetPath not specified")
 	}
 
