@@ -3,6 +3,7 @@ package gateways
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	usecases "kube-workers-manager/usecases"
 	"log"
 	"net/http"
@@ -57,7 +58,18 @@ func CreateWorkers(w http.ResponseWriter, r *http.Request) {
 	var workersDetails *usecases.WorkerApi = &usecases.WorkerApi{}
 	fmt.Println(fmt.Sprintf("%s %s", r.Method, r.URL))
 
-	err := json.NewDecoder(r.Body).Decode(workersDetails)
+	// Read the body into a buffer
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Unable to read body", http.StatusBadRequest)
+		return
+	}
+
+	// Print the raw body as a string
+	fmt.Println("Request Body:", string(bodyBytes))
+
+	// err = json.NewDecoder(bodyBytes).Decode(workersDetails)
+	err = json.Unmarshal(bodyBytes, workersDetails)
 	if err != nil {
 		http.Error(w, "Bad Request: cannot unmarshal the body "+err.Error(), http.StatusBadRequest)
 		fmt.Println("Cannot unmarshal workersDetails struct", err.Error())
