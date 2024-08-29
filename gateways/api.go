@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	backendBaseRoute = "/worker-manager/"
+	backendBaseRoute = "/worker-manager"
 
-	createWorkers = "createWorkers"
-	deleteWorkers = "deleteWorkers"
+	createWorkers = "/create-workers"
+	deleteWorkers = "/delete-workers"
 )
 
 func NewAPI() *mux.Router {
@@ -55,19 +55,22 @@ func optionsHandler(_ http.ResponseWriter, _ *http.Request) {
 
 func CreateWorkers(w http.ResponseWriter, r *http.Request) {
 	var workersDetails *usecases.WorkerApi = &usecases.WorkerApi{}
+	fmt.Println(fmt.Sprintf("%s %s", r.Method, r.URL))
 
 	err := json.NewDecoder(r.Body).Decode(workersDetails)
 	if err != nil {
 		http.Error(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	err = usecases.CreateKubeObjects(workersDetails)
 	if err != nil {
 		json.NewEncoder(w).Encode(fmt.Errorf("Error creating workers: %v\n", err.Error()))
+		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(fmt.Sprintf("Workers created successfully\n"))
-
 }
 
 func DeleteWorkers(w http.ResponseWriter, r *http.Request) {
