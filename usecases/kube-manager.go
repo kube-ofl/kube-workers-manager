@@ -23,7 +23,7 @@ type Worker struct {
 }
 
 type WorkerApi struct {
-	WorkersNo    int    `json:"workersNo"`
+	NoWorkers    int    `json:"noWorkers"`
 	DatasetPath  string `json:"datasetPath"`
 	Namespace    string `json:"namespace,omitempty"`
 	Image        string `json:"image,omitempty"`
@@ -214,8 +214,8 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 	// 	return fmt.Errorf("Invalid Worker Details: %v", err.Error())
 	// }
 
-	if workersDetails.WorkersNo <= 0 {
-		return fmt.Errorf("Invalid number of workers\n")
+	if workersDetails.NoWorkers <= 0 {
+		return fmt.Errorf("Invalid number of workers")
 	}
 
 	if workersDetails.DatasetPath == "" {
@@ -241,7 +241,7 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 		uploadFolder = workersDetails.UploadFolder
 	}
 
-	for i := 1; i <= workersDetails.WorkersNo; i++ {
+	for i := 1; i <= workersDetails.NoWorkers; i++ {
 
 		worker := &Worker{
 			Name:        getWorkerName(i),

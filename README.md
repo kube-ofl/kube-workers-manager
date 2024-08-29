@@ -3,7 +3,7 @@ This service creates kubernetes resources based on requests from the api server 
 
 - These are parameters that can be set for the workers through the manager's API:
 ```
-	WorkersNo       int    `json:"workersNo"`
+	NoWorkers       int    `json:"noWorkers"`
 	TrainingDataDir string `json:"trainingDataDir`
 	Namespace       string `json:"namespace,omitempty"`
 	Image           string `json:"image,omitempty"`
@@ -25,13 +25,13 @@ UploadFolder: /data
 ```
 POST /worker-manager/createWorkers
 { 
-    "workersNo": 4,
+    "noWorkers": 4,
     "trainingDataDir": "trainingDataDir1"
 }
 ```
 ```
-curl -X POST http://localhost:80/worker-manager/createWorkers -H "Content-Type: application/json" -d '{"workersNo": 4, "trainingDataDir": "trainingDataDir1"}'
-curl -X POST http://worker-manager-service.svc.cluster.local/worker-manager/createWorkers -H "Content-Type: application/json" -d '{"workersNo": 4, "trainingDataDir": "trainingDataDir1"}'
+curl -X POST http://localhost:80/worker-manager/createWorkers -H "Content-Type: application/json" -d '{"noWorkers": 4, "trainingDataDir": "trainingDataDir1"}'
+curl -X POST http://worker-manager-service.svc.cluster.local/worker-manager/createWorkers -H "Content-Type: application/json" -d '{"noWorkers": 4, "trainingDataDir": "trainingDataDir1"}'
 ```
 
 
@@ -39,7 +39,7 @@ curl -X POST http://worker-manager-service.svc.cluster.local/worker-manager/crea
 POST /worker-manager/createWorkers
 ```
 { 
-    "workersNo": 4,
+    "noWorkers": 4,
     "trainingDataDir": "trainingDataDir1",
     "namespace": "kube-ofl",
     "image": "ofl-worker:v1",

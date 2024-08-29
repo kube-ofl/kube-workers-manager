@@ -88,7 +88,7 @@ func CreateWorkers(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Request handled successfully")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(fmt.Sprintf("Workers created successfully\n"))
+	json.NewEncoder(w).Encode(fmt.Sprintf("Workers created successfully"))
 }
 
 func DeleteWorkers(w http.ResponseWriter, r *http.Request) {
