@@ -105,7 +105,7 @@ func (w *Worker) createDeployment() {
 							Name: "data",
 							VolumeSource: corev1.VolumeSource{
 								HostPath: &corev1.HostPathVolumeSource{
-									Path: "/data",
+									Path: "/ofl-data",
 								},
 							},
 						},
@@ -248,7 +248,7 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 			Namespace:   ns,
 			Image:       image,
 			Port:        workerPort,
-			DatasetPath: workersDetails.DatasetPath,
+			DatasetPath: fmt.Sprintf("%s%d", workersDetails.DatasetPath, i),
 			clientset:   clientset,
 		}
 
@@ -256,7 +256,7 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 			WorkerID:     fmt.Sprintf("worker-%d", i),
 			Port:         workerPort,
 			UploadFolder: uploadFolder,
-			DatasetPath:  workersDetails.DatasetPath,
+			DatasetPath:  fmt.Sprintf("%s%d", workersDetails.DatasetPath, i),
 		}
 
 		cmData, err := json.Marshal(configMapData)
