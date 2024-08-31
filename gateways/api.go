@@ -76,7 +76,7 @@ func CreateWorkers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("Workers details: %v", workersDetails)
+	fmt.Printf("Workers details: %v\n", workersDetails)
 
 	err = usecases.CreateKubeObjects(workersDetails)
 	if err != nil {
