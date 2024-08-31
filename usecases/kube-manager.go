@@ -243,12 +243,13 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 
 	for i := 1; i <= workersDetails.NoWorkers; i++ {
 
+		datasetPathOfWorker := fmt.Sprintf("%s%d", workersDetails.DatasetPath, i)
 		worker := &Worker{
 			Name:        getWorkerName(i),
 			Namespace:   ns,
 			Image:       image,
 			Port:        workerPort,
-			DatasetPath: fmt.Sprintf("%s%d", workersDetails.DatasetPath, i),
+			DatasetPath: datasetPathOfWorker,
 			clientset:   clientset,
 		}
 
@@ -256,7 +257,7 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 			WorkerID:     fmt.Sprintf("worker-%d", i),
 			Port:         workerPort,
 			UploadFolder: uploadFolder,
-			DatasetPath:  fmt.Sprintf("%s%d", workersDetails.DatasetPath, i),
+			DatasetPath:  datasetPathOfWorker,
 		}
 
 		cmData, err := json.Marshal(configMapData)
