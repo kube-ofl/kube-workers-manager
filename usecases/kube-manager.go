@@ -244,6 +244,8 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 	for i := 1; i <= workersDetails.NoWorkers; i++ {
 
 		datasetPathOfWorker := fmt.Sprintf("%s%d", workersDetails.DatasetPath, i)
+		fmt.Println("datasetPathOfWorker: ", datasetPathOfWorker)
+
 		worker := &Worker{
 			Name:        getWorkerName(i),
 			Namespace:   ns,
@@ -253,6 +255,8 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 			clientset:   clientset,
 		}
 
+		fmt.Printf("worker: %v\n", worker)
+
 		configMapData := &CmData{
 			WorkerID:     fmt.Sprintf("worker-%d", i),
 			Port:         workerPort,
@@ -260,10 +264,13 @@ func CreateKubeObjects(workersDetails *WorkerApi) error {
 			DatasetPath:  datasetPathOfWorker,
 		}
 
+		fmt.Printf("cmStruct RAW: %v\n", configMapData)
+
 		cmData, err := json.Marshal(configMapData)
 		if err != nil {
 			return fmt.Errorf("Invalid ConfigMap data for worker: %v\n", err)
 		}
+		fmt.Printf("cmData: %v\n", string(cmData))
 
 		worker.createConfigMap(string(cmData))
 		worker.createDeployment()
